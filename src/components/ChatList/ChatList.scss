@@ -1,0 +1,20 @@
+.chatlist-wrapper {
+
+  flex: 1 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 2em;
+
+  &>div {
+    width: 98vw;
+    max-width: 500px;
+  }
+
+  @import "../../styles/onlineAvatar";
+
+  .ava-wrap{
+    height: 40px;
+    width: 40px;
+  }
+}

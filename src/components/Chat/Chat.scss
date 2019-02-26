@@ -1,0 +1,133 @@
+.wrapper {
+
+  font-size: 1rem;
+  margin-top: 2em;
+
+  .paper {
+    padding: 1.5em;
+  }
+
+  .chat-wrapper {
+    width: calc(98vw - 3em);
+    max-width: 600px;
+    height: 30em;
+    overflow: hidden;
+    border: 1px solid #90CAF9;
+    border-radius: 0.8em;
+
+    .scroller {
+      width: calc(100% + 10px);
+      height: 100%;
+      overflow: hidden;
+      overflow-y: scroll;
+    }
+
+    .chat {
+      display: flex;
+      flex-direction: column;
+
+      width: calc(98vw - 3em);
+      max-width: 600px;
+      min-height: 100%;
+
+      .message {
+        display: flex;
+        margin: 3px 10px;
+        max-width: 70%;
+        align-items: center;
+        animation: new-message 0.5s 1;
+
+        &:last-child {
+          margin-bottom: 10px;
+        }
+
+        &:first-child {
+          margin-top: auto;
+        }
+
+        .message-avatar {
+          align-self: flex-start;
+          margin-right: 0.1em;
+        }
+        .message-text {
+          //word-wrap: anywhere;
+          word-break: break-all;
+          line-height: 1.6em;
+          font-size: 1em;
+          background: #90CAF9;
+          padding: .6em;
+          border-radius: .8em;
+        }
+      }
+
+      .message.history {
+        animation: slide-in-from-left 0.5s 1;
+      }
+
+      .message.history.me {
+        animation: slide-in-from-right 0.5s 1;
+      }
+
+      .me {
+        align-self: flex-end;
+
+        .message-avatar {
+          order: 2;
+          margin-left: 0.1em;
+          margin-right: 0;
+        }
+      }
+    }
+  }
+
+  .status-bar {
+
+    .friend-name {
+      font-size: 2em;
+      font-weight: 300;
+      line-height: 1.5em;
+    }
+
+    @import "../../styles/onlineAvatar";
+
+    .ava-wrap {
+      height: 2.5em;
+      width: 2.5em;
+      margin-right: 0.5em;
+    }
+  }
+  .status-bar {
+    display: flex;
+    align-items: center;
+  }
+}
+
+@keyframes slide-in-from-left{
+  0%{
+    transform: translateX(-100%);
+  }
+
+  100% {
+    transform: translateX(0);
+  }
+}
+
+@keyframes slide-in-from-right{
+  0%{
+    transform: translateX(100%);
+  }
+
+  100% {
+    transform: translateX(0);
+  }
+}
+
+@keyframes new-message{
+  0%{
+    transform: translateY(100%);
+  }
+
+  100% {
+    transform: translateY(0);
+  }
+}

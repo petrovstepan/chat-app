@@ -1,0 +1,22 @@
+.friend-status {
+  background-color: azure;
+  border-radius: 50%;
+  position: relative;
+}
+
+.friend-status:after {
+  content: '';
+  display: block;
+  position: absolute;
+  height: 0.5em;
+  width: 0.5em;
+  background-color: red;
+  border-radius: 100%;
+  bottom: 0;
+  right: 0;
+  border: 2px solid white;
+}
+
+.friend-status.online:after {
+  background-color: #8ac176;
+}

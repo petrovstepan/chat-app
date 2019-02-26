@@ -1,0 +1,4 @@
+{
+  "watch": ["server", "src/SocketEvents.js"],
+  "delay": "0"
+}

@@ -1,0 +1,104 @@
+{
+  "name": "real-time-chat",
+  "version": "1.0.0",
+  "description": "\"Real time chat using web sockets and react\"",
+  "main": "index.js",
+  "repository": "github:petrovstepan/chat-app",
+  "scripts": {
+    "server": "nodemon server/server.js",
+    "start": "concurrently 'npm run server' 'npm run watch'",
+    "build": "webpack --mode production",
+    "watch": "webpack --mode development --watch",
+    "watch-dev": "webpack-dev-server --mode development",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "prettier": "prettier --write src/**/*.js"
+  },
+  "keywords": [
+    "rta",
+    "react",
+    "chat",
+    "websockets"
+  ],
+  "author": "Stepan",
+  "license": "ISC",
+  "devDependencies": {
+    "@babel/core": "^7.2.2",
+    "@babel/plugin-proposal-class-properties": "^7.3.0",
+    "@babel/preset-env": "^7.3.1",
+    "@babel/preset-react": "^7.0.0",
+    "autoprefixer": "^9.4.7",
+    "babel-eslint": "^9.0.0",
+    "babel-loader": "^8.0.5",
+    "babel-polyfill": "^6.26.0",
+    "concurrently": "^4.1.0",
+    "css-loader": "^2.1.0",
+    "eslint": "^5.14.1",
+    "eslint-config-prettier": "^4.0.0",
+    "eslint-config-react-app": "^3.0.7",
+    "eslint-plugin-flowtype": "^2.50.3",
+    "eslint-plugin-import": "^2.16.0",
+    "eslint-plugin-jsx-a11y": "^6.2.1",
+    "eslint-plugin-prettier": "^3.0.1",
+    "eslint-plugin-react": "^7.12.4",
+    "html-webpack-plugin": "^3.2.0",
+    "husky": "^1.3.1",
+    "lint-staged": "^8.1.1",
+    "node-sass": "^4.11.0",
+    "nodemon": "^1.18.10",
+    "postcss-loader": "^3.0.0",
+    "prettier": "^1.16.3",
+    "sass-loader": "^7.1.0",
+    "style-loader": "^0.23.1",
+    "webpack": "^4.29.3",
+    "webpack-cli": "^3.2.3",
+    "webpack-dev-server": "^3.1.14"
+  },
+  "browserslist": [
+    ">0.2%",
+    "not dead",
+    "not ie <= 11",
+    "not op_mini all"
+  ],
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "*.(js)": [
+      "eslint --max-warnings=0",
+      "prettier --write",
+      "git add"
+    ]
+  },
+  "dependencies": {
+    "axios": "^0.18.0",
+    "bcryptjs": "^2.4.3",
+    "body-parser": "latest",
+    "connect-redis": "^3.4.0",
+    "cookie-parser": "latest",
+    "dotenv": "^6.2.0",
+    "express": "^4.16.4",
+    "express-session": "^1.15.6",
+    "express-socket.io-session": "^1.3.5",
+    "jsonwebtoken": "^8.4.0",
+    "lodash": "^4.17.11",
+    "material-ui": "^0.20.2",
+    "mongoose": "^5.4.12",
+    "passport": "^0.4.0",
+    "passport-jwt": "^4.0.0",
+    "passport-vkontakte": "^0.3.2",
+    "prop-types": "latest",
+    "react": "^16.8.1",
+    "react-dom": "^16.8.1",
+    "react-redux": "^6.0.0",
+    "react-router-dom": "^4.3.1",
+    "redis": "^2.8.0",
+    "redux": "^4.0.1",
+    "redux-thunk": "^2.3.0",
+    "socket.io": "^2.2.0",
+    "socket.io-client": "^2.2.0",
+    "socketio-jwt": "^4.5.0",
+    "react-transition-group": "latest"
+  }
+}

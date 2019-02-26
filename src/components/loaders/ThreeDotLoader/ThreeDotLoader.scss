@@ -1,0 +1,45 @@
+.loader {
+  .text {
+    color: #a9abad;
+    font-size: 0.8em;
+  }
+
+  .dot-loader {
+    display: inline;
+    margin-right: 0.1em;
+  }
+}
+
+.dot {
+  display: inline-block;
+  height: 0.2em;
+  width: 0.2em;
+  background: #a9abad;
+  border-radius: 50%;
+  margin-right: 0.2em;
+
+  animation-name: blink;
+  animation-duration: 1.1s;
+  animation-iteration-count: infinite;
+  animation-fill-mode: both
+}
+
+.dot:nth-child(2) {
+  animation-delay: .2s;
+}
+.dot:nth-child(3) {
+  animation-delay: .4s;
+  margin-right: 0.3em;
+}
+
+@keyframes blink {
+  0% {
+    opacity: .2;
+  }
+  20% {
+    opacity: 1;
+  }
+  100% {
+    opacity: .2;
+  }
+}

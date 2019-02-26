@@ -1,0 +1,54 @@
+.notifications-wrapper {
+  position: fixed;
+  left: 50%;
+  bottom: 0px;
+  z-index: 2900;
+  transform: translate(-50%, 0px);
+  display: flex;
+  flex-direction: column;
+
+  .notification-transition-enter {
+    transform: translateY(100%);
+  }
+
+  .notification-transition-enter.notification-transition-enter-active {
+    transform: translateY(0);
+    transition: transform 500ms;
+  }
+
+  .notification-transition-leave {
+    transform: translateY(0);
+    opacity: 1;
+  }
+
+  .notification-transition-leave.notification-transition-leave-active {
+    transform: translateY(-1000%);
+    opacity: 0;
+    transition: transform 500ms, opacity 500ms;
+  }
+
+  .notification {
+
+    .ava-text-wrapper {
+      display: flex;
+      align-items: center;
+
+      &>*:first-child {
+        margin-right: 5px;
+      }
+      &>span {
+        white-space: nowrap;
+      }
+    }
+
+    &:not(:last-child) {
+      margin-bottom: 5px;
+    }
+
+    &>div {
+      background-color: rgba(0,0,0,0.8);
+    }
+  }
+}
+
+
