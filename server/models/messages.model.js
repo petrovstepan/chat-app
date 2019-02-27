@@ -22,18 +22,12 @@ MessageSchema.pre('save', function(next) {
 })
 
 MessageSchema.post('save', function(doc, next) {
-  console.log(doc)
   //var SchemaVar = require(‘mongoose’).model(‘nameOfTheModel’).schema
   ChatModel.findOneAndUpdate(
     { _id: doc.chatId },
     { lastMessage: doc._id },
     {},
-    (err, chat) => {
-      console.log(`lastMessage: ${doc._id}`)
-      console.log('post save')
-      console.log(chat)
-      console.log(err)
-    }
+    (err, chat) => {}
   )
   next()
 })

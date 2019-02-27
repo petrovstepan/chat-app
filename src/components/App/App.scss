@@ -6,13 +6,14 @@
 }
 
 main {
-    flex: 1 1;
     display: flex;
     justify-content: center;
-    align-items: flex-start;
+    overflow: hidden;
+    flex: 1 1;
 }
 
 .app-header {
     background-color: #1E88E5;
     align-items: center;
+    max-height: 8vh;
 }

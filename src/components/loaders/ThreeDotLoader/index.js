@@ -2,8 +2,8 @@ import React from 'react'
 import './ThreeDotLoader.scss'
 
 class ThreeDotLoader extends React.Component {
-  constructor() {
-    super()
+  constructor(props) {
+    super(props)
     this.ref = React.createRef()
   }
 

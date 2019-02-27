@@ -19,7 +19,7 @@ const io = require('socket.io')(http, {
   // }
 })
 
-require('./parsers')(app, io)
+require('./appSettings')(app, io)
 require('./db')()
 require('./router')(app)
 require('./sockets')(io)

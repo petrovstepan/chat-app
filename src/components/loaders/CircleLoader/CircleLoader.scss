@@ -1,0 +1,11 @@
+.loader-wrapper {
+  flex: 1 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #FAFAFA;
+
+  .loader-container {
+    position: relative;
+  }
+}

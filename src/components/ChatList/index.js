@@ -19,7 +19,6 @@ class ChatList extends React.Component {
   componentDidMount() {
     const io = this.io
     const { getChats, updateLastMessage, setFriendIsTyping } = this.props
-    getChats()
 
     io.on(NEW_CHAT, () => getChats())
     io.on(NEW_MESSAGE, msg => updateLastMessage(msg))
@@ -73,14 +72,23 @@ class ChatList extends React.Component {
     })
 
   render() {
-    const { chats } = this.props.chatList
+    const { chats } = this.props
 
     return (
       <div className="chatlist-wrapper">
         <Paper zDepth={2}>
           <List>
             <Subheader>Чаты</Subheader>
-            {this.renderChats(chats)}
+            {chats.length ? (
+              this.renderChats(chats)
+            ) : (
+              <ListItem
+                primaryText="У вас начатых диалогов"
+                secondaryText="Выберите пользователя из списка онлайн и начните общение"
+                secondaryTextLines={1}
+                disabled
+              />
+            )}
           </List>
         </Paper>
       </div>

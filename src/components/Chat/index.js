@@ -10,28 +10,26 @@ import {
   GET_CHAT_PARAMS,
 } from '../../SocketEvents'
 import ThreeDotLoader from '../loaders/ThreeDotLoader'
+import Error from '../errors/Error'
+import CircleLoader from '../loaders/CircleLoader'
+
+// TODO: слишком много методов, вынести и упростить
 
 class Chat extends React.Component {
   constructor(props) {
     super(props)
-    this.friendId = null
     this.chat = React.createRef()
 
     this.state = {
       inpVal: '',
     }
 
-    const { match, user, chatId = match.params.id } = props
-    const r = new RegExp(`^${user.id}_([a-z0-9]+)$`, 'i')
-
-    if (r.test(chatId)) {
-      ;[, this.friendId] = chatId.split('_')
-    }
+    const { id } = props.match.params
+    const queryParams = this.parseUrlParams(id)
 
     this.io = io('/chat', {
       query: {
-        friendId: this.friendId,
-        chatId: this.friendId ? '' : chatId,
+        ...queryParams,
       },
       autoConnect: false,
     })
@@ -92,7 +90,7 @@ class Chat extends React.Component {
   }
 
   ioListeners = io => {
-    const { addMessage, setFriendIsTyping } = this.props
+    const { addMessage, setFriendIsTyping, setChatError } = this.props
 
     io.once(GET_CHAT_PARAMS, params => this.props.setChatParams(params))
     io.on(NEW_MESSAGE, msg => {
@@ -105,9 +103,7 @@ class Chat extends React.Component {
       this.friendIsTyping = setTimeout(() => setFriendIsTyping(false), 1500) // будет перезаписываться и продляться каждый раз
     })
 
-    io.on('error', msg => {
-      console.log('error')
-    })
+    io.on('error', type => setChatError(type))
     io.on('disconnect', () => {})
   }
 
@@ -119,9 +115,8 @@ class Chat extends React.Component {
       return (
         <div
           key={msg._id}
-          className={
-            `message ${(me && 'me') || ''} ` + `${history && 'history'}`
-          }
+          className={`message ${(me && 'me') || ''} ${(history && 'history') ||
+            ''}`}
         >
           <Avatar
             className="message-avatar"
@@ -162,7 +157,6 @@ class Chat extends React.Component {
   }
 
   processUrlMatchChange = (id, oldId, chatParams) => {
-    console.log(id, oldId)
     if (oldId !== id) {
       const params = this.parseUrlParams(id)
       if (params.friendId) {
@@ -193,7 +187,7 @@ class Chat extends React.Component {
         if (chatId !== oldChatId) {
           // если это разные чаты
           this.props.getMessageHistory(chatId) // то загрузим историю
-          return true
+          return true // TODO: не загружать всю историю сразу, а постепенно при чтении истории
         }
         // если раньше чата не было
       } else if (!oldFriend || oldFriend._id !== friend._id) {
@@ -251,8 +245,9 @@ class Chat extends React.Component {
     }
   }
 
-  onKeyPress = e => this.io.emit(FRIEND_IS_TYPING) // решил не ставить ограничения по коду клавиш и срабатывать на все
-  onKeyUp = e => {
+  // keyUp вместо keyPress для chrome на android
+  onKeyUp = e => this.io.emit(FRIEND_IS_TYPING) // решил не ставить ограничения по коду клавиш и срабатывать на все
+  onKeyDown = e => {
     if (e.key.toString().toLowerCase() === 'enter') {
       e.preventDefault()
       this.sendMessage(e.target.value.trim())
@@ -261,8 +256,14 @@ class Chat extends React.Component {
   onChange = e => this.setState({ inpVal: e.target.value })
 
   render() {
-    const { messages, history } = this.props
-    const { usersOnline, friendIsTyping } = this.props
+    const {
+      messages,
+      history,
+      usersOnline,
+      friendIsTyping,
+      error,
+      isLoading,
+    } = this.props
     const { friend } = this.props.params
     const friendIsOnline = Object.keys(usersOnline).includes(friend._id) || ''
     const { inpVal } = this.state
@@ -295,20 +296,28 @@ class Chat extends React.Component {
           <div className="chat-wrapper">
             <div className="scroller" onScroll={this.onScroll}>
               <div ref={chatRef} className={'chat'}>
-                {this.renderMessages(history, true)}
-                {this.renderMessages(messages)}
+                {isLoading ? (
+                  <CircleLoader />
+                ) : error.type ? (
+                  <Error {...error} />
+                ) : (
+                  <React.Fragment>
+                    {this.renderMessages(history, true)}
+                    {this.renderMessages(messages)}
+                  </React.Fragment>
+                )}
               </div>
             </div>
           </div>
           <TextField
             hintText={(friend.name && `Привет, ${friend.name}!`) || 'Привет!'}
             floatingLabelText="Напишите сообщение"
-            onKeyDown={this.onKeyUp}
-            onKeyPress={this.onKeyPress}
+            onKeyDown={this.onKeyDown}
+            onKeyUp={this.onKeyUp}
             onChange={this.onChange}
             multiLine
             fullWidth
-            rows={2}
+            rows={1}
             rowsMax={3}
             value={inpVal}
           />
