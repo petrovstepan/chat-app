@@ -49,7 +49,7 @@ export const chatListReducer = (state = initialState, action) => {
       return {
         ...state,
         isLoading: false,
-        error: { type: 401, text: 'ошибка' },
+        error: action.payload,
       }
     case UPDATE_LAST_MESSAGE:
       const msg = action.payload

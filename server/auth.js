@@ -1,14 +1,18 @@
 const UserModel = require('./models/users.model')
-//const _ = require('lodash')
 const passport = require('passport')
 const { Strategy: StrategyVK } = require('passport-vkontakte')
+const authConfig = require('./config/auth')
+const serverConfig = require('./config/server')
+const { getErrorResponse } = require('./helpers/respoonseHelpers')
 
 passport.use(
   new StrategyVK(
     {
-      clientID: 6865856,
-      clientSecret: 'oMRCfB9ILR08Nf5PHCyJ',
-      callbackURL: 'http://localhost:3000/auth/vkontakte/callback',
+      clientID: authConfig.clientID,
+      clientSecret: authConfig.clientSecret,
+      callbackURL: `http://${serverConfig.host}:${
+        serverConfig.port
+      }/auth/vkontakte/callback`,
     },
     async (accessToken, refreshToken, params, profile, done) => {
       let user = await UserModel.findOne({
@@ -31,7 +35,6 @@ passport.use(
         })
 
         user = await user.save().catch(err => {
-          console.log('saving user error')
           console.log(err)
         })
 
@@ -46,9 +49,6 @@ passport.use(
         delete user._id
       }
 
-      console.log('user')
-      console.log(user)
-
       done(null, user)
     }
   )
@@ -56,16 +56,23 @@ passport.use(
 
 const authorizevk = passport.authenticate('vkontakte', {})
 
-const vkCheckAuth = passport.authenticate('vkontakte', { session: true })
-
 const vkAuthCallback = passport.authenticate('vkontakte', {
   session: true,
   successRedirect: '/',
   failureRedirect: '/login',
 })
 
+const checkAuth = (req, resp, next) => {
+  const { user } = req
+  if (user && user.id) {
+    next()
+  } else {
+    resp.status(401).json(getErrorResponse('Требуется авторизация'))
+  }
+}
+
 module.exports = {
   authorizevk,
   vkAuthCallback,
-  vkCheckAuth,
+  checkAuth,
 }

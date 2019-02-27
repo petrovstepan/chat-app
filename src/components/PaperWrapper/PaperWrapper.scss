@@ -1,0 +1,17 @@
+.paper-wrapper {
+
+  flex: 1 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 2em;
+
+  & > div {
+    width: 98vw;
+    max-width: 500px;
+    min-height: 40vh;
+
+    display: flex;
+    justify-content: center;
+  }
+}

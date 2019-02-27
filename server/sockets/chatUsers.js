@@ -1,67 +1,39 @@
-const MessageModel = require('./models/messages.model')
-const UserModel = require('./models/users.model')
-const ChatModel = require('./models/chats.model')
+const { handleSession } = require('../helpers/socketHelper')
+const ChatModel = require('../models/chats.model')
+const UserModel = require('../models/users.model')
+const MessageModel = require('../models/messages.model')
 const {
   NEW_CHAT,
-  USER_JOINED,
-  GET_USERS_ONLINE,
-  USER_LEFT,
   NEW_MESSAGE,
   JOIN_CHAT,
   FRIEND_IS_TYPING,
   GET_CHAT_PARAMS,
-} = require('../src/SocketEvents')
+  CHAT_DOESNT_EXIST,
+  NOT_A_CHAT_MEMBER,
+} = require('../../src/SocketEvents')
 
-module.exports = io => {
-  const handleSession = (socket, next) => {
-    const { user = null } =
-      (socket.handshake.session && socket.handshake.session.passport) || {}
-    socket.user = user
+module.exports = (chatUsers, onlineUsers, chatList) => {
+  chatUsers.use(handleSession)
 
-    if (user) {
-      next()
+  const userHasRightsForChat = (socket, next) => {
+    const { chat, user, myId = user.id } = socket
+    let userInChat
+    if (chat) {
+      userInChat = chat.users.find(
+        user => user._id.toString() === myId.toString()
+      ) // если чат был найден по chatId, а не юзерам
+      if (userInChat) {
+        next()
+      } else {
+        // чат существует, но пользователь не имеет к нему отношения
+        next(new Error(NOT_A_CHAT_MEMBER))
+      }
     } else {
-      next(new Error('Client lost auth'))
+      next()
     }
   }
 
-  const onlineUsers = io.of('/online-users')
-  const chatList = io.of('/chatlist')
-  const chatUsers = io.of('/chat')
-
-  onlineUsers.use(handleSession)
-  chatList.use(handleSession)
-  chatUsers.use(handleSession)
-
-  onlineUsers.on('connection', async socket => {
-    const user = socket.user
-    socket.join(user.id) // чтобы иметь доступ из другого неймспейса
-    socket.broadcast.emit(USER_JOINED, user)
-
-    console.log(`${user.name} connected to online`)
-
-    socket.on(GET_USERS_ONLINE, (msg, cb) => {
-      const users = {}
-      Object.keys(onlineUsers.sockets).forEach(key => {
-        let su = onlineUsers.sockets[key].user
-        return su.id.toString() !== user.id.toString() && (users[su.id] = su)
-      })
-      cb(users)
-    })
-
-    socket.on('disconnect', reason => {
-      onlineUsers.emit(USER_LEFT, user.id)
-    })
-  })
-
-  chatList.on('connection', socket => {
-    const { user } = socket
-    socket.join(user.id)
-  })
-
-  chatUsers.use(async (socket, next) => {
-    console.log('joining to chat users')
-
+  async function findChatOrFriend(socket, next) {
     let { friendId, chatId } = socket.handshake.query
     const user = socket.user
     let chat, friend
@@ -77,6 +49,10 @@ module.exports = io => {
           console.log('catched error btw')
         })
     } else if (friendId) {
+      if (friendId === user.id) {
+        next(new Error(CHAT_DOESNT_EXIST)) // не разрешим чата с собой
+      }
+
       friend = await UserModel.findOne({
         _id: friendId,
       })
@@ -100,7 +76,7 @@ module.exports = io => {
           })
       }
     } else {
-      next(new Error('no chat'))
+      next(new Error(CHAT_DOESNT_EXIST))
     }
 
     friend =
@@ -115,9 +91,12 @@ module.exports = io => {
       socket.friend = friend
       next()
     } else {
-      next(new Error('no chat'))
+      next(new Error(CHAT_DOESNT_EXIST))
     }
-  })
+  }
+
+  chatUsers.use(findChatOrFriend)
+  chatUsers.use(userHasRightsForChat)
 
   chatUsers.on('connection', socket => {
     const { user, chat, friend, friendId = friend._id } = socket
@@ -158,13 +137,12 @@ module.exports = io => {
           })
 
         if (!chat) {
-          console.log('create chat')
           chat = new ChatModel({
             users: [user.id, friendId],
           })
 
           chat = await chat.save().catch(err => {
-            console.log('chat fail')
+            console.log('catched err')
           })
           if (chat) {
             socket.join(chat._id)
@@ -189,7 +167,6 @@ module.exports = io => {
 
       msg = await msg.save().catch(err => {
         console.log(err)
-        console.log('ошибка создания сообщения')
       })
 
       if (msg) {
@@ -197,14 +174,12 @@ module.exports = io => {
         socket.to(chat._id).emit(NEW_MESSAGE, msg) // отправляем для отображения в чате
         chatList.to(friendId, user.id).emit(NEW_MESSAGE, msg) // обновляем последнее сообщение в /chatlist
         //chatList.to(user.id).emit(NEW_MESSAGE, msg)
-        onlineUsers
-          .to(friendId)
-          .emit(NEW_MESSAGE, {
-            id: msg._id,
-            chatId: chat._id,
-            msg,
-            friend: user,
-          })
+        onlineUsers.to(friendId).emit(NEW_MESSAGE, {
+          id: msg._id,
+          chatId: chat._id,
+          msg,
+          friend: user,
+        })
       }
     })
   })

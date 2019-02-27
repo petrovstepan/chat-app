@@ -1,17 +1,18 @@
+const config = require('./config/server')
+const socket = require('./sockets/config/namespaces')
 const passport = require('passport')
 const bodyParser = require('body-parser')
-//const cookieParser = require('cookie-parser')
 const session = require('express-session')
 const RedisStore = require('connect-redis')(session)
 const sharedsession = require('express-socket.io-session')
 const redisClient = require('redis').createClient({
-  host: 'localhost',
-  port: 6379,
+  host: config.redisHost,
+  port: config.redisPort,
 })
 
 module.exports = (app, io) => {
   const sess = session({
-    secret: 'ggYcvSXgKWzQrQfS',
+    secret: config.sessionSecret,
     resave: false,
     saveUninitialized: false,
     cookie: {
@@ -27,7 +28,6 @@ module.exports = (app, io) => {
 
   app.use(bodyParser.json())
   app.use(bodyParser.urlencoded())
-  //app.use(cookieParser())
   app.use(passport.initialize())
   app.use(passport.session())
 
@@ -39,19 +39,7 @@ module.exports = (app, io) => {
     done(null, user)
   })
 
-  io.of('/online-users').use(
-    sharedsession(sess, {
-      autoSave: true,
-    })
-  )
-  io.of('/chatlist').use(
-    sharedsession(sess, {
-      autoSave: true,
-    })
-  )
-  io.of('/chat').use(
-    sharedsession(sess, {
-      autoSave: true,
-    })
+  socket.namespaces.forEach(n =>
+    io.of(n).use(sharedsession(sess, { autoSave: true }))
   )
 }

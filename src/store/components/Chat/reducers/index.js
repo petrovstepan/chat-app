@@ -8,6 +8,8 @@ import {
   RESET_CHAT_STATE,
   SET_CHAT_PARAMS,
   RESET_MESSAGES,
+  SET_CHAT_ERROR,
+  RESET_ERROR,
 } from '../actions'
 
 const emptyError = {
@@ -15,11 +17,13 @@ const emptyError = {
   text: '',
 }
 
+const emptyParams = {
+  chatId: '',
+  friend: {},
+}
+
 const initialState = {
-  params: {
-    chatId: '',
-    friend: {},
-  },
+  params: emptyParams,
   history: [],
   messages: [],
   userIsReadingChatHistory: false,
@@ -78,6 +82,17 @@ export const chatReducer = (state = initialState, action) => {
         ...state,
         history: [],
         messages: [],
+      }
+    case SET_CHAT_ERROR:
+      return {
+        ...state,
+        params: emptyParams,
+        error: action.payload,
+      }
+    case RESET_ERROR:
+      return {
+        ...state,
+        error: emptyError,
       }
     default:
       return {

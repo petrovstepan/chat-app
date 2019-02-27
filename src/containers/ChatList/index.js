@@ -6,15 +6,19 @@ import {
   getChats,
   setFriendIsTyping,
 } from '../../store/components/ChatList/actions'
+import withLoading from '../../hocs/withLoading'
+import withError from '../../hocs/withError'
+import withDataLoading from '../../hocs/withDataLoading'
 
 const mapStateToProps = state => ({
   ...state.auth,
-  chatList: state.chatList,
+  ...state.chatList,
   usersOnline: state.usersOnline,
 })
 
 const mapDispatchToProps = dispatch => ({
   getChats: () => dispatch(getChats()),
+  loadData: () => dispatch(getChats()), // для DataLoader'a
   updateLastMessage: msg => dispatch(updateLastMessage(msg)),
   setFriendIsTyping: (typing, chatId) =>
     dispatch(setFriendIsTyping(typing, chatId)),
@@ -23,4 +27,4 @@ const mapDispatchToProps = dispatch => ({
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(withAuth(ChatList))
+)(withAuth(withDataLoading(withError(withLoading(ChatList)))))

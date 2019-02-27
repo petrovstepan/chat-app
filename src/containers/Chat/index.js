@@ -9,6 +9,7 @@ import {
   resetChatState,
   resetMessages,
   setChatParams,
+  setChatError,
 } from '../../store/components/Chat/actions'
 
 const mapStateToProps = state => ({
@@ -26,6 +27,7 @@ const mapDispatchToProps = dispatch => ({
   resetChatState: () => dispatch(resetChatState()),
   setChatParams: params => dispatch(setChatParams(params)),
   resetMessages: () => dispatch(resetMessages()),
+  setChatError: type => dispatch(setChatError(type)),
 })
 
 export default connect(

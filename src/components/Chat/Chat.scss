@@ -1,16 +1,25 @@
 .wrapper {
 
+  flex: 1 1;
+  display: flex;
   font-size: 1rem;
+  flex-direction: column;
   margin-top: 2em;
 
   .paper {
     padding: 1.5em;
+    flex: 1 1;
+    display: flex;
+    flex-direction: column;
+    align-self: center;
+    width: 98vw;
+    max-width: 600px;
+    max-height: 99%;
+    height: 99%;
   }
 
   .chat-wrapper {
-    width: calc(98vw - 3em);
-    max-width: 600px;
-    height: 30em;
+    flex: 1 1;
     overflow: hidden;
     border: 1px solid #90CAF9;
     border-radius: 0.8em;
@@ -25,9 +34,7 @@
     .chat {
       display: flex;
       flex-direction: column;
-
-      width: calc(98vw - 3em);
-      max-width: 600px;
+      width: calc(100% - 10px);
       min-height: 100%;
 
       .message {
@@ -50,7 +57,6 @@
           margin-right: 0.1em;
         }
         .message-text {
-          //word-wrap: anywhere;
           word-break: break-all;
           line-height: 1.6em;
           font-size: 1em;
@@ -81,6 +87,8 @@
   }
 
   .status-bar {
+
+    font-size: calc(6px + 1vmin);
 
     .friend-name {
       font-size: 2em;

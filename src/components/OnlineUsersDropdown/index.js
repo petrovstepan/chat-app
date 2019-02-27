@@ -23,8 +23,18 @@ const OnlineUsersDropdown = props => {
       iconButtonElement={
         <FlatButton labelStyle={{ color: 'white' }} label="Онлайн" />
       }
+      anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+      targetOrigin={{ vertical: 'top', horizontal: 'right' }}
     >
-      {renderUsers(users)}
+      {Object.keys(users).length ? (
+        renderUsers(users)
+      ) : (
+        <MenuItem
+          primaryText="Нет пользователей в сети"
+          leftIcon={<Avatar src="/assets/img/avatar.jpg" />}
+          disabled
+        />
+      )}
     </IconMenu>
   )
 }

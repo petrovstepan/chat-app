@@ -41,7 +41,7 @@ export const getChats = () => async dispatch => {
           status: 'FAIL',
           data: {
             type: type,
-            error: 'Неизвестная ошибка сервера',
+            text: 'Неизвестная ошибка сервера',
           },
         }
       }
@@ -58,8 +58,7 @@ export const getChats = () => async dispatch => {
       type: GET_CHATS_FAIL,
       error: true,
       payload: {
-        type: 500,
-        text: 'ошибка',
+        ...json.data,
       },
     })
   }
