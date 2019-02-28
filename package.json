@@ -7,8 +7,8 @@
   "scripts": {
     "server": "nodemon server/server.js",
     "start": "concurrently 'npm run server' 'npm run watch'",
-    "build": "webpack --mode production",
-    "watch": "webpack --mode development --watch",
+    "build": "webpack",
+    "watch": "webpack --watch",
     "watch-dev": "webpack-dev-server --mode development",
     "test": "echo \"Error: no test specified\" && exit 1",
     "prettier": "prettier --write src/**/*.js"
@@ -53,12 +53,6 @@
     "webpack-cli": "^3.2.3",
     "webpack-dev-server": "^3.1.14"
   },
-  "browserslist": [
-    ">0.2%",
-    "not dead",
-    "not ie <= 11",
-    "not op_mini all"
-  ],
   "husky": {
     "hooks": {
       "pre-commit": "lint-staged"

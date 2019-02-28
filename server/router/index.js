@@ -64,6 +64,8 @@ module.exports = app => {
 
   app.get('/*', (req, resp) => {
     const { user } = req
+    const production = app.get('env') === 'PRODUCTION'
+    const src = production ? 'public' : 'dist'
 
     // отправляем куки при первичной загрузке страницы, для инициализации state
     if (user) {
@@ -74,7 +76,7 @@ module.exports = app => {
       }
     }
 
-    resp.sendFile(path.join(__dirname, '..', '..', 'dist', 'index.html'))
+    resp.sendFile(path.join(__dirname, '..', '..', src, 'index.html'))
   })
 
   app.post('/api/logout', (req, resp) => {

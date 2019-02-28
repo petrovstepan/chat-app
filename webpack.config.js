@@ -1,13 +1,18 @@
 const path = require('path')
+require('dotenv').load({ path: path.join(__dirname, '.env') })
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const webpack = require('webpack')
+const production = process.env.NODE_ENV === 'PRODUCTION'
+const dirName = production ? 'public' : 'dist'
+const publicPath = production ? '/assets' : '/static'
 
 module.exports = {
+  mode: production ? 'production' : 'development',
   entry: ['babel-polyfill', './src/index.js'],
   output: {
-    path: path.join(__dirname, 'dist'),
+    path: path.join(__dirname, dirName),
     filename: 'index_bundle.js',
-    publicPath: '/static',
+    publicPath: publicPath,
   },
   module: {
     rules: [
@@ -20,11 +25,32 @@ module.exports = {
       },
       {
         test: /\.css$/,
-        use: ['style-loader', 'css-loader'], //css-loader - объединение всех файлов в один, style-loader - добавит к документу в тег style
+        use: [
+          'style-loader',
+          'css-loader',
+          {
+            loader: 'postcss-loader',
+            options: {
+              ident: 'postcss',
+              plugins: [require('autoprefixer')],
+            },
+          },
+        ],
       },
       {
         test: [/\.scss$/, /\.sass/],
-        use: ['style-loader', 'css-loader', 'sass-loader'],
+        use: [
+          'style-loader',
+          'css-loader',
+          {
+            loader: 'postcss-loader',
+            options: {
+              ident: 'postcss',
+              plugins: [require('autoprefixer')],
+            },
+          },
+          'sass-loader',
+        ],
       },
     ],
   },
