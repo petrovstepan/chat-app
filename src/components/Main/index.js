@@ -1,6 +1,7 @@
 import React from 'react'
 import PaperWrapper from '../PaperWrapper'
 import './Main.scss'
+import pt from 'prop-types'
 
 const Main = props => {
   const { isLogged, user } = props
@@ -26,3 +27,11 @@ const Main = props => {
 }
 
 export default Main
+
+Main.propTypes = {
+  isLogged: pt.bool.isRequired,
+  user: pt.shape({
+    id: pt.string.isRequired,
+    name: pt.string.isRequired,
+  }).isRequired,
+}

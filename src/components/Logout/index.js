@@ -1,5 +1,6 @@
 import React from 'react'
 import { Redirect } from 'react-router-dom'
+import pt from 'prop-types'
 
 class Logout extends React.Component {
   componentDidMount = () => this.props.logout()
@@ -7,3 +8,8 @@ class Logout extends React.Component {
 }
 
 export default Logout
+
+Logout.propTypes = {
+  isLogged: pt.bool.isRequired,
+  logout: pt.func.isRequired,
+}

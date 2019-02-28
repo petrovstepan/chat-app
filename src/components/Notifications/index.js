@@ -4,6 +4,8 @@ import './Notifications.scss'
 import { Link } from 'react-router-dom'
 import { CSSTransitionGroup } from 'react-transition-group'
 import { Avatar } from 'material-ui'
+import pt from 'prop-types'
+import { notificationType } from '../../utils/propTypesHelper'
 
 // override defaults
 const style = {
@@ -66,3 +68,9 @@ class Notifications extends React.Component {
 }
 
 export default Notifications
+
+Notifications.propTypes = {
+  notifications: pt.objectOf(notificationType),
+
+  removeNotification: pt.func.isRequired,
+}
