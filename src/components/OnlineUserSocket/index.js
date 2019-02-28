@@ -7,6 +7,7 @@ import {
   USER_JOINED,
   USER_LEFT,
 } from '../../SocketEvents'
+import pt from 'prop-types'
 
 class OnlineUserSocket extends React.Component {
   constructor(props) {
@@ -91,3 +92,19 @@ class OnlineUserSocket extends React.Component {
 }
 
 export default OnlineUserSocket
+
+OnlineUserSocket.propTypes = {
+  isLogged: pt.bool.isRequired,
+
+  user: pt.shape({
+    id: pt.string.isRequired,
+    name: pt.string.isRequired,
+    photo: pt.string.isRequired,
+    url: pt.string.isRequired,
+  }).isRequired,
+
+  setUsersOnline: pt.func.isRequired,
+  userLeave: pt.func.isRequired,
+  userJoin: pt.func.isRequired,
+  addNotification: pt.func.isRequired,
+}

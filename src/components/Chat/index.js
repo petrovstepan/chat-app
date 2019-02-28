@@ -1,4 +1,5 @@
 import React from 'react'
+import pt from 'prop-types'
 import './Chat.scss'
 import io from 'socket.io-client'
 import { Avatar, TextField } from 'material-ui'
@@ -328,3 +329,54 @@ class Chat extends React.Component {
 }
 
 export default Chat
+
+Chat.propTypes = {
+  isLogged: pt.bool.isRequired,
+  user: pt.shape({
+    id: pt.string.isRequired,
+    name: pt.string.isRequired,
+    photo: pt.string.isRequired, // можно было был регулярку для url добавить, но длинно выйдет
+    url: pt.string.isRequired,
+  }).isRequired,
+
+  params: pt.shape({
+    chatId: pt.string.isRequired,
+    friend: pt.object.isRequired,
+  }).isRequired,
+
+  error: pt.shape({
+    type: pt.oneOfType([pt.string, pt.number]).isRequired,
+    text: pt.string,
+  }).isRequired,
+
+  history: pt.arrayOf(
+    pt.shape({
+      _id: pt.string.isRequired,
+      userId: pt.string.isRequired,
+      chatId: pt.string.isRequired,
+      // может что-то еще
+    })
+  ),
+
+  messages: pt.arrayOf(
+    pt.shape({
+      _id: pt.string.isRequired,
+      userId: pt.string.isRequired,
+      chatId: pt.string.isRequired,
+      // может что-то еще
+    })
+  ),
+
+  userIsReadingChatHistory: pt.bool.isRequired,
+  friendIsTyping: pt.bool.isRequired,
+  isLoading: pt.bool.isRequired,
+
+  addMessage: pt.func.isRequired,
+  getMessageHistory: pt.func.isRequired,
+  setFriendIsTyping: pt.func.isRequired,
+  setUserIsReadingHistory: pt.func.isRequired,
+  resetChatState: pt.func.isRequired,
+  setChatParams: pt.func.isRequired,
+  resetMessages: pt.func.isRequired,
+  setChatError: pt.func.isRequired,
+}

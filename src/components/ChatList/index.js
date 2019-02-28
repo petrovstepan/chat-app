@@ -9,6 +9,7 @@ import Subheader from 'material-ui/Subheader'
 import Avatar from 'material-ui/Avatar'
 import Paper from 'material-ui/Paper'
 import ThreeDotLoader from '../../components/loaders/ThreeDotLoader'
+import pt from 'prop-types'
 
 class ChatList extends React.Component {
   constructor(props) {
@@ -97,3 +98,42 @@ class ChatList extends React.Component {
 }
 
 export default ChatList
+
+ChatList.propTypes = {
+  isLogged: pt.bool.isRequired,
+
+  user: pt.shape({
+    id: pt.string.isRequired,
+    name: pt.string.isRequired,
+    photo: pt.string.isRequired, // можно было был регулярку для url добавить, но длинно выйдет
+    url: pt.string.isRequired,
+  }).isRequired,
+
+  isLoading: pt.bool.isRequired,
+
+  chats: pt.arrayOf(
+    pt.shape({
+      _id: pt.string.isRequired,
+      friendIsTyping: pt.bool, // при загрузке с сервера его изначально нет
+
+      users: pt.arrayOf(
+        pt.shape({
+          _id: pt.string.isRequired,
+          name: pt.string.isRequired,
+          photo: pt.string.isRequired,
+        }).isRequired // должен быть один user - тот с кем мы переписываемся
+      ).isRequired,
+
+      lastMessage: pt.shape({
+        text: pt.string.isRequired,
+        // возможно тут есть что-то еще
+      }).isRequired,
+    })
+  ).isRequired,
+
+  usersOnline: pt.object.isRequired, // в этом компоненте внутренняя структура пользователей не используется, нужны только ключи,
+  // поэтому дополнительно проверять ничего не будем
+  getChats: pt.func.isRequired,
+  updateLastMessage: pt.func.isRequired,
+  setFriendIsTyping: pt.func.isRequired,
+}

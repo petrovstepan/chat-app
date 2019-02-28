@@ -2,7 +2,7 @@ import Navigation from '../../components/Navigation'
 import { connect } from 'react-redux'
 
 const mapStateToProps = state => ({
-  ...state.auth,
+  isLogged: state.auth.isLogged,
 })
 
 export default connect(mapStateToProps)(Navigation)
