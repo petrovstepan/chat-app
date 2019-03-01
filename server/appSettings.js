@@ -5,10 +5,16 @@ const bodyParser = require('body-parser')
 const session = require('express-session')
 const RedisStore = require('connect-redis')(session)
 const sharedsession = require('express-socket.io-session')
-const redisClient = require('redis').createClient({
-  host: config.redisHost,
-  port: config.redisPort,
-})
+const redisClient = require('redis').createClient(
+  config.redisUrl
+    ? {
+        url: config.redisUrl,
+      }
+    : {
+        host: config.redisHost,
+        port: config.redisPort,
+      }
+)
 
 module.exports = (app, io) => {
   const sess = session({

@@ -24,6 +24,13 @@ require('./db')()
 require('./router')(app)
 require('./sockets')(io)
 
-http.listen(httpConf.port, httpConf.host, () => {
-  console.log(`server started on ${httpConf.host} port ${httpConf.port}`)
-})
+if (process.env.PORT) {
+  // heroku
+  http.listen(process.env.PORT, () => {
+    console.log(`server started on heroku on port ${process.env.PORT}`)
+  })
+} else {
+  http.listen(httpConf.port, httpConf.host, () => {
+    console.log(`server started on ${httpConf.host} port ${httpConf.port}`)
+  })
+}
