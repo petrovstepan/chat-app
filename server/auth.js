@@ -10,9 +10,11 @@ passport.use(
     {
       clientID: authConfig.clientID,
       clientSecret: authConfig.clientSecret,
-      callbackURL: `http://${serverConfig.host}:${
-        serverConfig.port
-      }/auth/vkontakte/callback`,
+      callbackURL: serverConfig.fullUrl
+        ? `${serverConfig.fullUrl}/auth/vkontakte/callback`
+        : `http://${serverConfig.host}:${
+            serverConfig.port
+          }/auth/vkontakte/callback`,
     },
     async (accessToken, refreshToken, params, profile, done) => {
       let user = await UserModel.findOne({
